@@ -1,5 +1,4 @@
 import ballerina/http;
-import ballerina/io;
 import ballerinax/ai.agent;
 
 configurable string apiKey = ?;
@@ -7,9 +6,8 @@ configurable string deploymentId = ?;
 configurable string apiVersion = ?;
 configurable string serviceUrl = ?;
 
-agent:Model model = check new agent:AzureOpenAiModel({auth: {apiKey}}, serviceUrl, deploymentId, apiVersion);
-
-agent:Agent agent = check new (
+final agent:Model model = check new agent:AzureOpenAiModel({auth: {apiKey}}, serviceUrl, deploymentId, apiVersion);
+final agent:Agent agent = check new (
     systemPrompt = {
         role: "Telegram Assistant",
         instructions: "Assist the users with their requests, whether it's for information, " +
@@ -77,10 +75,3 @@ isolated function createPost(int id, NewPost post) returns anydata|error {
     return ripplitClient->/users/[id]/posts.post(post);
 }
 
-public function main() returns error? {
-    while true {
-        string query = io:readln("QUERY: ");
-        string result = check agent->run(query);
-        io:println(">> ", result);
-    }
-}
