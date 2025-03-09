@@ -6,7 +6,7 @@ configurable string deploymentId = ?;
 configurable string apiVersion = ?;
 configurable string serviceUrl = ?;
 
-final agent:Model model = check new agent:AzureOpenAiModel({auth: {apiKey}}, serviceUrl, deploymentId, apiVersion);
+final agent:Model model = check new agent:AzureOpenAiModel(serviceUrl, apiKey, deploymentId, apiVersion);
 final agent:Agent agent = check new (
     systemPrompt = {
         role: "Telegram Assistant",
@@ -14,8 +14,7 @@ final agent:Agent agent = check new (
             "tasks, or troubleshooting. Provide clear, helpful responses in a friendly and professional manner."
     },
     model = model,
-    tools = [getUsers, getUser, getUsersPosts, getsPosts, createUser, createPost, deleteUser],
-    memory = new agent:MessageWindowChatMemory(10) // Available by default
+    tools = [getUsers, getUser, getUsersPosts, getsPosts, createUser, createPost, deleteUser]
 );
 
 final http:Client ripplitClient = check new ("http://localhost:9095/ripplit");
